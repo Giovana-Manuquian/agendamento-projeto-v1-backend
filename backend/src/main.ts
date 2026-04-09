@@ -25,8 +25,11 @@ async function bootstrap() {
     }),
   );
   
-  const port = Number(process.env.PORT ?? 3000);
-  await app.listen(port, '0.0.0.0'); //alterei aqui
+  // Use Number para garantir que seja um valor numérico
+  const port = process.env.PORT ? Number(process.env.PORT) : 8080; 
+
+  // O host '0.0.0.0' é obrigatório para o Railway expor o serviço
+  await app.listen(port, '0.0.0.0'); 
   console.log(`🚀 Servidor rodando na porta: ${port}`);
 }
 bootstrap();
