@@ -8,36 +8,51 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Tabela de Profissionais (Tu)
+// Enum para separar os papéis no sistema
+enum Role {
+  CLIENT
+  PROVIDER
+}
+
+// Tabela Única de Usuários (Clientes e Profissionais)
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  name         String
-  password     String
-  specialty    String
-  services     Service[]     // Um usuário pode ter vários serviços
-  createdAt    DateTime      @default(now())
+  id                 String        @id @default(uuid())
+  email              String        @unique
+  name               String
+  password           String
+  role               Role          @default(CLIENT) 
+  specialty          String?       
+  
+  // Relacionamentos
+  services           Service[]     @relation("ProviderServices") 
+  clientAppointments Appointment[] @relation("ClientAppointments") 
+  
+  createdAt          DateTime      @default(now())
 }
 
 // Tabela de Serviços (Ex: Corte de Cabelo, Consultoria)
 model Service {
   id           String        @id @default(uuid())
   name         String
-  description String?
+  description  String?
   price        Float
-  duration     Int           // Duração em minutos
-  userId       String
-  user         User          @relation(fields: [userId], references: [id])
+  duration     Int           
+  userId       String        
+  user         User          @relation("ProviderServices", fields: [userId], references: [id])
   appointments Appointment[]
 }
 
 // Tabela de Agendamentos (Onde os clientes marcam)
 model Appointment {
-  id           String   @id @default(uuid())
-  clientName   String
-  clientEmail  String
-  date         DateTime // Data e hora do agendamento
-  serviceId    String
-  service      Service  @relation(fields: [serviceId], references: [id])
-  status       String   @default("PENDING") // PENDING, CONFIRMED, CANCELED
+  id        String   @id @default(uuid())
+  date      DateTime 
+  status    String   @default("PENDING") 
+  
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id])
+  
+  clientId  String
+  client    User     @relation("ClientAppointments", fields: [clientId], references: [id])
+
+  @@index([date]) // <-- Otimização para buscas de datas mais rápidas
 }

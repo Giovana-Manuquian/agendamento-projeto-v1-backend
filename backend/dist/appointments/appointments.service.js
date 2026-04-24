@@ -22,7 +22,7 @@ let AppointmentsService = class AppointmentsService {
             where: { id: data.serviceId },
         });
         if (!service) {
-            throw new common_1.BadRequestException('Serviço não encontrado.');
+            throw new common_1.BadRequestException("Serviço não encontrado.");
         }
         const endTime = new Date(appointmentDate.getTime() + service.duration * 60000);
         const conflict = await this.prisma.appointment.findFirst({
@@ -31,22 +31,32 @@ let AppointmentsService = class AppointmentsService {
                 AND: [
                     { date: { lt: endTime } },
                     {
-                        date: { gt: new Date(appointmentDate.getTime() - (service.duration * 60000)) }
-                    }
-                ]
-            }
+                        date: {
+                            gt: new Date(appointmentDate.getTime() - service.duration * 60000),
+                        },
+                    },
+                ],
+            },
         });
         if (conflict) {
-            throw new common_1.BadRequestException('Este horário já está ocupado para este serviço.');
+            throw new common_1.BadRequestException("Este horário já está ocupado para este serviço.");
         }
         return this.prisma.appointment.create({
             data: {
-                clientName: data.clientName,
-                clientEmail: data.clientEmail,
                 date: appointmentDate,
+                status: "PENDING",
                 service: { connect: { id: data.serviceId } },
-                status: "PENDING"
+                client: { connect: { id: data.clientId } },
             },
+        });
+    }
+    async findByUser(userId) {
+        return this.prisma.appointment.findMany({
+            where: { clientId: userId },
+            include: {
+                service: { include: { user: true } },
+            },
+            orderBy: { date: "asc" },
         });
     }
     async findAll(serviceId) {
@@ -55,17 +65,16 @@ let AppointmentsService = class AppointmentsService {
                 ...(serviceId ? { serviceId } : {}),
             },
             include: {
-                service: {
-                    include: { user: true }
-                }
+                service: { include: { user: true } },
+                client: { select: { id: true, name: true, email: true } },
             },
-            orderBy: { date: 'asc' }
+            orderBy: { date: "asc" },
         });
     }
     async findOne(id) {
         return this.prisma.appointment.findUnique({
             where: { id },
-            include: { service: true }
+            include: { service: true, client: true },
         });
     }
     async update(id, data) {

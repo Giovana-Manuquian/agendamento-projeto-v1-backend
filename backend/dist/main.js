@@ -6,9 +6,12 @@ const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const corsOriginsEnv = process.env.CORS_ORIGINS;
-    const corsOrigins = corsOriginsEnv?.split(',').map((s) => s.trim()).filter(Boolean) ?? [];
+    const corsOrigins = corsOriginsEnv
+        ?.split(",")
+        .map((s) => s.trim())
+        .filter(Boolean) ?? [];
     app.enableCors({
-        origin: corsOrigins.length ? corsOrigins : true,
+        origin: "https://agendamento-projeto-front-v2.vercel.app",
         credentials: true,
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
@@ -17,9 +20,9 @@ async function bootstrap() {
         transform: true,
         transformOptions: { enableImplicitConversion: true },
     }));
-    const port = Number(process.env.PORT ?? 3000);
-    await app.listen(port);
-    console.log(`🚀 Servidor rodando em: http://localhost:${port}`);
+    const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+    await app.listen(port, "0.0.0.0");
+    console.log(`🚀 Servidor rodando na porta: ${port}`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

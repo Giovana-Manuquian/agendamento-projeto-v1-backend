@@ -15,20 +15,18 @@ class CreateAppointmentDto {
 }
 exports.CreateAppointmentDto = CreateAppointmentDto;
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'Nome é obrigatório.' }),
-    (0, class_validator_1.Length)(2, 80, { message: 'Nome deve ter entre 2 e 80 caracteres.' }),
-    __metadata("design:type", String)
-], CreateAppointmentDto.prototype, "clientName", void 0);
-__decorate([
-    (0, class_validator_1.IsEmail)({}, { message: 'E-mail inválido.' }),
-    __metadata("design:type", String)
-], CreateAppointmentDto.prototype, "clientEmail", void 0);
-__decorate([
-    (0, class_validator_1.IsISO8601)({}, { message: 'Data/hora inválida.' }),
+    (0, class_validator_1.IsISO8601)({}, { message: "Data/hora inválida." }),
+    (0, class_validator_1.IsNotEmpty)({ message: "A data é obrigatória." }),
     __metadata("design:type", String)
 ], CreateAppointmentDto.prototype, "date", void 0);
 __decorate([
-    (0, class_validator_1.IsUUID)(undefined, { message: 'Serviço inválido.' }),
+    (0, class_validator_1.IsUUID)(undefined, { message: "Serviço inválido." }),
+    (0, class_validator_1.IsNotEmpty)({ message: "O serviço é obrigatório." }),
     __metadata("design:type", String)
 ], CreateAppointmentDto.prototype, "serviceId", void 0);
+__decorate([
+    (0, class_validator_1.IsUUID)(undefined, { message: "Cliente inválido." }),
+    (0, class_validator_1.IsNotEmpty)({ message: "ID do cliente não informado." }),
+    __metadata("design:type", String)
+], CreateAppointmentDto.prototype, "clientId", void 0);
 //# sourceMappingURL=create-appointment.dto.js.map

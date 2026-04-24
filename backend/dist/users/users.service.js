@@ -12,15 +12,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
+const bcrypt = require("bcrypt");
 let UsersService = class UsersService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(data) {
-        return this.prisma.user.create({ data });
+    async create(createUserDto) {
+        const userExists = await this.prisma.user.findUnique({
+            where: { email: createUserDto.email },
+        });
+        if (userExists) {
+            throw new common_1.BadRequestException("Este e-mail já está cadastrado.");
+        }
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+        return this.prisma.user.create({
+            data: {
+                ...createUserDto,
+                password: hashedPassword,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+            },
+        });
     }
     async findAll() {
-        return this.prisma.user.findMany();
+        return this.prisma.user.findMany({
+            where: { role: "PROVIDER" },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                specialty: true,
+            },
+        });
     }
 };
 exports.UsersService = UsersService;

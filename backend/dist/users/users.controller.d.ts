@@ -1,22 +1,19 @@
-import { UsersService } from './users.service';
-import { Prisma } from '@prisma/client';
+import { UsersService } from "./users.service";
+import { CreateUserDto } from "./dto/create-user.dto";
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
-    create(data: Prisma.UserCreateInput): Promise<{
+    create(createUserDto: CreateUserDto): Promise<{
         id: string;
         email: string;
         name: string;
-        password: string;
-        specialty: string;
-        createdAt: Date;
+        role: import(".prisma/client").$Enums.Role;
     }>;
     findAll(): Promise<{
         id: string;
         email: string;
         name: string;
-        password: string;
+        role: import(".prisma/client").$Enums.Role;
         specialty: string;
-        createdAt: Date;
     }[]>;
 }

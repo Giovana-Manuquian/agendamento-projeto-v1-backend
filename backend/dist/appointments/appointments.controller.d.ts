@@ -1,25 +1,24 @@
-import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { AppointmentsService } from "./appointments.service";
+import { CreateAppointmentDto } from "./dto/create-appointment.dto";
 export declare class AppointmentsController {
     private readonly appointmentsService;
     constructor(appointmentsService: AppointmentsService);
-    create(createAppointmentDto: CreateAppointmentDto): Promise<{
+    create(createAppointmentDto: CreateAppointmentDto, req: any): Promise<{
         id: string;
-        clientName: string;
-        clientEmail: string;
         date: Date;
-        serviceId: string;
         status: string;
+        serviceId: string;
+        clientId: string;
     }>;
-    findAll(serviceId?: string): Promise<({
+    findMy(req: any): Promise<({
         service: {
             user: {
                 id: string;
-                email: string;
                 name: string;
+                email: string;
                 password: string;
-                specialty: string;
+                role: import(".prisma/client").$Enums.Role;
+                specialty: string | null;
                 createdAt: Date;
             };
         } & {
@@ -32,14 +31,23 @@ export declare class AppointmentsController {
         };
     } & {
         id: string;
-        clientName: string;
-        clientEmail: string;
         date: Date;
-        serviceId: string;
         status: string;
+        serviceId: string;
+        clientId: string;
     })[]>;
-    findOne(id: string): Promise<{
+    findAll(req: any, serviceId?: string): Promise<({
         service: {
+            user: {
+                id: string;
+                name: string;
+                email: string;
+                password: string;
+                role: import(".prisma/client").$Enums.Role;
+                specialty: string | null;
+                createdAt: Date;
+            };
+        } & {
             id: string;
             name: string;
             description: string | null;
@@ -47,36 +55,16 @@ export declare class AppointmentsController {
             duration: number;
             userId: string;
         };
+        client: {
+            id: string;
+            name: string;
+            email: string;
+        };
     } & {
         id: string;
-        clientName: string;
-        clientEmail: string;
         date: Date;
-        serviceId: string;
         status: string;
-    }>;
-    update(id: string, updateAppointmentDto: UpdateAppointmentDto): Promise<{
-        id: string;
-        clientName: string;
-        clientEmail: string;
-        date: Date;
         serviceId: string;
-        status: string;
-    }>;
-    updateStatus(id: string, status: string): Promise<{
-        id: string;
-        clientName: string;
-        clientEmail: string;
-        date: Date;
-        serviceId: string;
-        status: string;
-    }>;
-    remove(id: string): Promise<{
-        id: string;
-        clientName: string;
-        clientEmail: string;
-        date: Date;
-        serviceId: string;
-        status: string;
-    }>;
+        clientId: string;
+    })[]>;
 }

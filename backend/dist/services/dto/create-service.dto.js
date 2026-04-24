@@ -15,28 +15,30 @@ class CreateServiceDto {
 }
 exports.CreateServiceDto = CreateServiceDto;
 __decorate([
-    (0, class_validator_1.IsString)({ message: 'Nome do serviço inválido.' }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Nome do serviço é obrigatório.' }),
-    (0, class_validator_1.Length)(2, 80, { message: 'Nome do serviço deve ter entre 2 e 80 caracteres.' }),
+    (0, class_validator_1.IsString)({ message: "Nome do serviço inválido." }),
+    (0, class_validator_1.IsNotEmpty)({ message: "Nome do serviço é obrigatório." }),
+    (0, class_validator_1.Length)(2, 80, {
+        message: "Nome do serviço deve ter entre 2 e 80 caracteres.",
+    }),
     __metadata("design:type", String)
 ], CreateServiceDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({ message: 'Descrição inválida.' }),
+    (0, class_validator_1.IsString)({ message: "Descrição inválida." }),
     __metadata("design:type", String)
 ], CreateServiceDto.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)({}, { message: 'Preço inválido.' }),
-    (0, class_validator_1.Min)(0, { message: 'Preço deve ser maior ou igual a 0.' }),
+    (0, class_validator_1.IsNumber)({}, { message: "Preço inválido." }),
+    (0, class_validator_1.Min)(0, { message: "Preço deve ser maior ou igual a 0." }),
     __metadata("design:type", Number)
 ], CreateServiceDto.prototype, "price", void 0);
 __decorate([
-    (0, class_validator_1.IsInt)({ message: 'Duração inválida.' }),
-    (0, class_validator_1.Min)(1, { message: 'Duração deve ser em minutos (>= 1).' }),
+    (0, class_validator_1.IsInt)({ message: "Duração inválida." }),
+    (0, class_validator_1.Min)(1, { message: "Duração deve ser em minutos (>= 1)." }),
     __metadata("design:type", Number)
 ], CreateServiceDto.prototype, "duration", void 0);
 __decorate([
-    (0, class_validator_1.IsUUID)(undefined, { message: 'Profissional (userId) inválido.' }),
+    (0, class_validator_1.IsUUID)(undefined, { message: "Profissional (userId) inválido." }),
     __metadata("design:type", String)
 ], CreateServiceDto.prototype, "userId", void 0);
 //# sourceMappingURL=create-service.dto.js.map

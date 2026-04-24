@@ -24,7 +24,7 @@ let ServicesService = class ServicesService {
                 price: data.price,
                 duration: data.duration,
                 user: {
-                    connect: { id: data.userId }
+                    connect: { id: data.userId },
                 },
             },
         });

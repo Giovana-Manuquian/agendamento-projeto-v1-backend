@@ -1,40 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Query,
+} from "@nestjs/common";
+import { AppointmentsService } from "./appointments.service";
+import { CreateAppointmentDto } from "./dto/create-appointment.dto";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 
-@Controller('appointments')
+@Controller("appointments")
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
+  @UseGuards(JwtAuthGuard) // Protege a rota: só logado cria agendamento
   @Post()
-  create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return this.appointmentsService.create(createAppointmentDto);
+  async create(
+    @Body() createAppointmentDto: CreateAppointmentDto,
+    @Request() req,
+  ) {
+    // Pegamos o ID do usuário logado direto do Token (injetado pelo JwtStrategy)
+    const userId = req.user.userId;
+
+    // Passamos o ID do usuário para o service criar o vínculo no banco
+    return this.appointmentsService.create({
+      ...createAppointmentDto,
+      clientId: userId,
+    });
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get("my-appointments")
+  async findMy(@Request() req) {
+    // Rota para o cliente ver os agendamentos dele
+    return this.appointmentsService.findByUser(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query('serviceId') serviceId?: string) {
-    // Agora ele repassa o ID para o Service fazer o filtro
+  async findAll(@Request() req, @Query('serviceId') serviceId?: string) {
     return this.appointmentsService.findAll(serviceId);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto) {
-    return this.appointmentsService.update(id, updateAppointmentDto);
-  }
-
-  @Patch(':id/status')
-  updateStatus(@Param('id') id: string, @Body('status') status: string) {
-    return this.appointmentsService.update(id, { status });
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appointmentsService.remove(id);
   }
 }

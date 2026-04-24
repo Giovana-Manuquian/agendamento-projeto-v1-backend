@@ -1,2 +1,1 @@
-export declare class Service {
-}
+export declare class Service {}

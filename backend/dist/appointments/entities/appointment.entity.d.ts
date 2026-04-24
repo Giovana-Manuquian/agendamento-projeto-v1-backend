@@ -1,2 +1,1 @@
-export declare class Appointment {
-}
+export declare class Appointment {}

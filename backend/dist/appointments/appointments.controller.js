@@ -16,77 +16,54 @@ exports.AppointmentsController = void 0;
 const common_1 = require("@nestjs/common");
 const appointments_service_1 = require("./appointments.service");
 const create_appointment_dto_1 = require("./dto/create-appointment.dto");
-const update_appointment_dto_1 = require("./dto/update-appointment.dto");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 let AppointmentsController = class AppointmentsController {
     constructor(appointmentsService) {
         this.appointmentsService = appointmentsService;
     }
-    create(createAppointmentDto) {
-        return this.appointmentsService.create(createAppointmentDto);
+    async create(createAppointmentDto, req) {
+        const userId = req.user.userId;
+        return this.appointmentsService.create({
+            ...createAppointmentDto,
+            clientId: userId,
+        });
     }
-    findAll(serviceId) {
+    async findMy(req) {
+        return this.appointmentsService.findByUser(req.user.userId);
+    }
+    async findAll(req, serviceId) {
         return this.appointmentsService.findAll(serviceId);
-    }
-    findOne(id) {
-        return this.appointmentsService.findOne(id);
-    }
-    update(id, updateAppointmentDto) {
-        return this.appointmentsService.update(id, updateAppointmentDto);
-    }
-    updateStatus(id, status) {
-        return this.appointmentsService.update(id, { status });
-    }
-    remove(id) {
-        return this.appointmentsService.remove(id);
     }
 };
 exports.AppointmentsController = AppointmentsController;
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_appointment_dto_1.CreateAppointmentDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_appointment_dto_1.CreateAppointmentDto, Object]),
+    __metadata("design:returntype", Promise)
 ], AppointmentsController.prototype, "create", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)("my-appointments"),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppointmentsController.prototype, "findMy", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)('serviceId')),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Query)('serviceId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
 ], AppointmentsController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], AppointmentsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_appointment_dto_1.UpdateAppointmentDto]),
-    __metadata("design:returntype", void 0)
-], AppointmentsController.prototype, "update", null);
-__decorate([
-    (0, common_1.Patch)(':id/status'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)('status')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", void 0)
-], AppointmentsController.prototype, "updateStatus", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], AppointmentsController.prototype, "remove", null);
 exports.AppointmentsController = AppointmentsController = __decorate([
-    (0, common_1.Controller)('appointments'),
+    (0, common_1.Controller)("appointments"),
     __metadata("design:paramtypes", [appointments_service_1.AppointmentsService])
 ], AppointmentsController);
 //# sourceMappingURL=appointments.controller.js.map

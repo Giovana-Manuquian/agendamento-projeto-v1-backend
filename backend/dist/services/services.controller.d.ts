@@ -1,6 +1,6 @@
-import { ServicesService } from './services.service';
-import { CreateServiceDto } from './dto/create-service.dto';
-import { UpdateServiceDto } from './dto/update-service.dto';
+import { ServicesService } from "./services.service";
+import { CreateServiceDto } from "./dto/create-service.dto";
+import { UpdateServiceDto } from "./dto/update-service.dto";
 export declare class ServicesController {
     private readonly servicesService;
     constructor(servicesService: ServicesService);
@@ -18,7 +18,8 @@ export declare class ServicesController {
             email: string;
             name: string;
             password: string;
-            specialty: string;
+            role: import(".prisma/client").$Enums.Role;
+            specialty: string | null;
             createdAt: Date;
         };
     } & {
@@ -35,7 +36,8 @@ export declare class ServicesController {
             email: string;
             name: string;
             password: string;
-            specialty: string;
+            role: import(".prisma/client").$Enums.Role;
+            specialty: string | null;
             createdAt: Date;
         };
     } & {
