@@ -26,6 +26,12 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT ? Number(process.env.PORT) : 8080;
-  await app.listen(port, "0.0.0.0");
+  // No seu main.ts, altere estas linhas:
+const port = process.env.PORT || 8080; 
+
+// Remova o "0.0.0.0" se o erro persistir, 
+// mas para o Railway, o ideal é manter ou deixar apenas a porta.
+await app.listen(port, '0.0.0.0'); 
+
+console.log(`Application is running on: ${await app.getUrl()}`);
 }
