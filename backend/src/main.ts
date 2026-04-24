@@ -3,8 +3,10 @@ import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
+  // Cria a aplicação NestJS
   const app = await NestFactory.create(AppModule);
 
+  // Configuração de CORS
   const corsOriginsEnv = process.env.CORS_ORIGINS;
   const corsOrigins =
     corsOriginsEnv
@@ -13,11 +15,12 @@ async function bootstrap() {
       .filter(Boolean) ?? [];
 
   app.enableCors({
-    // Isso permite que você use tanto a URL principal quanto as de teste do Vercel
+    // Se houver origens definidas, usa elas; caso contrário, permite tudo (true)
     origin: corsOrigins.length ? corsOrigins : true, 
     credentials: true,
   });
 
+  // Pipes Globais para validação de DTOs
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -26,12 +29,16 @@ async function bootstrap() {
     }),
   );
 
-  // No seu main.ts, altere estas linhas:
-const port = process.env.PORT || 8080; 
+  /**
+   * CONFIGURAÇÃO DE PORTA E HOST PARA DEPLOY (RAILWAY)
+   * O Railway exige que a aplicação escute em 0.0.0.0 e use a porta da variável de ambiente PORT.
+   */
+  const port = process.env.PORT || 8080; 
 
-// Remova o "0.0.0.0" se o erro persistir, 
-// mas para o Railway, o ideal é manter ou deixar apenas a porta.
-await app.listen(port, '0.0.0.0'); 
+  // O host '0.0.0.0' é fundamental para que o tráfego externo chegue ao container
+  await app.listen(port, '0.0.0.0'); 
 
-console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`🚀 Application is running on: ${await app.getUrl()}`);
 }
+
+bootstrap();
